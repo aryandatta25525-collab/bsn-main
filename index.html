@@ -81,6 +81,44 @@
             width: 100%;
             z-index: 50;
         }
+
+        .lotus-toggle {
+            width: 54px;
+            height: 54px;
+            border-radius: 9999px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: rgba(5, 46, 22, 0.95);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #a7f3d0;
+            transition: transform 0.45s ease, background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+        }
+        .lotus-toggle:hover {
+            background: rgba(16, 185, 129, 0.14);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.18);
+        }
+        .lotus-toggle.open {
+            transform: rotate(360deg);
+            background: rgba(16, 185, 129, 0.18);
+            box-shadow: 0 0 24px rgba(16, 185, 129, 0.35);
+        }
+        .lotus-toggle .lotus-emoji {
+            display: inline-block;
+            transition: transform 0.45s ease;
+        }
+        .lotus-toggle.open .lotus-emoji {
+            transform: rotate(-15deg) scale(1.05);
+        }
+        .mobile-menu-container {
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .mobile-menu-container.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-[#052e16] text-white overflow-x-hidden">
@@ -88,20 +126,18 @@
     <div id="progress-bar" class="progress-bar"></div>
 
     <!-- NAVBAR -->
-    <nav class="fixed top-0 left-0 right-0 bg-[#052e16]/90 backdrop-blur-lg border-b border-emerald-500/20 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+    <nav class="fixed top-0 left-0 right-0 bg-[#052e16]/90 backdrop-blur-lg border-b border-emerald-500/20 relative z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-3">
             <!-- Logo -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 min-w-0">
                 <img src="logo.png" alt="Bandna Shri Nika - BSN Logo" class="h-12 w-auto logo-glow">
-                <div>
-                    <span class="text-3xl font-bold tracking-tighter heading-font text-emerald-400">BSN</span>
-                </div>
-                <div class="text-sm font-medium leading-none">
-                    BANDNA<br>SHRI NIKA
+                <div class="min-w-0">
+                    <span class="text-3xl font-bold tracking-tighter heading-font text-emerald-400 block">BSN</span>
+                    <div class="text-xs sm:text-sm font-medium leading-none text-white/90">BANDNA SHRI NIKA</div>
                 </div>
             </div>
             
-            <!-- Menu -->
+            <!-- Desktop menu -->
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                 <a href="#vision" class="hover:text-emerald-400 transition-colors">VISION</a>
                 <a href="#ai-3d" class="hover:text-emerald-400 transition-colors">AI + 3D WORLD</a>
@@ -110,30 +146,33 @@
                 <a href="#join" class="hover:text-emerald-400 transition-colors">JOIN THE JOURNEY</a>
             </div>
             
-            <a href="#join" 
-               class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl transition-all duration-300 flex items-center gap-2 shadow-lg shadow-emerald-500/30">
-                <span>GET INVOLVED</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7-7 7" />
-                </svg>
-            </a>
-            
-            <!-- Mobile menu button -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-3xl leading-none">☰</button>
+            <div class="flex items-center gap-3">
+                <a href="#join" 
+                   class="hidden md:inline-flex px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl transition-all duration-300 flex items-center gap-2 shadow-lg shadow-emerald-500/30">
+                    <span>GET INVOLVED</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <button id="lotusToggle" onclick="toggleMobileMenu()" class="md:hidden lotus-toggle absolute right-6 top-1/2 -translate-y-1/2" aria-label="Toggle navigation menu">
+                    <span class="lotus-emoji text-2xl">𓍢ִ໋🪷</span>
+                </button>
+            </div>
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden bg-[#052e16] border-t border-emerald-500/20 px-6 py-6 flex flex-col gap-4 text-center">
+        <div id="mobileMenu" class="hidden md:hidden mobile-menu-container bg-[#052e16] border-t border-emerald-500/20 px-6 py-6 flex flex-col gap-4 text-center">
             <a href="#vision" onclick="toggleMobileMenu()" class="py-3 text-lg">VISION</a>
             <a href="#ai-3d" onclick="toggleMobileMenu()" class="py-3 text-lg">AI + 3D WORLD</a>
             <a href="#research" onclick="toggleMobileMenu()" class="py-3 text-lg">RESEARCH PILLARS</a>
             <a href="#model" onclick="toggleMobileMenu()" class="py-3 text-lg">REVENUE MODEL</a>
             <a href="#join" onclick="toggleMobileMenu()" class="py-3 text-lg">JOIN THE JOURNEY</a>
+            <a href="#join" onclick="toggleMobileMenu()" class="mt-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl transition-colors">GET INVOLVED</a>
         </div>
     </nav>
 
     <!-- HERO SECTION - Beautifully animated -->
-    <section class="hero-bg min-h-screen flex items-center pt-20 relative overflow-hidden">
+    <section class="hero-bg min-h-screen flex items-center pt-24 md:pt-20 relative overflow-hidden">
         <!-- Floating background elements -->
         <div class="absolute inset-0 pointer-events-none">
             <!-- Lotus 1 -->
@@ -422,7 +461,13 @@
         // Mobile menu toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
+            const button = document.getElementById('lotusToggle');
             menu.classList.toggle('hidden');
+            if (button) {
+                button.classList.toggle('open');
+                const isOpen = !menu.classList.contains('hidden');
+                button.setAttribute('aria-expanded', String(isOpen));
+            }
         }
         
         // Scroll progress bar
